@@ -1,42 +1,67 @@
-import lightbulb
-import hikari
+import disnake
+from disnake.ext import commands
+import os
+import json
+import random
+import time
+import urllib
+import asyncio
 
-bot = lightbulb.BotApp(
-    token='TOKEN_GOES_HERE', 
-    default_enabled_guilds=(924006119788138586, 896023046983397436, 891837711823036446))
+client = commands.Bot(command_prefix="<")
+client.remove_command("help")
 
-@bot.listen(hikari.GuildMessageCreateEvent)
-async def print_message(event):
-    print(event.content)
+owner = YOUR_ID_HERE
 
-@bot.listen(hikari.StartedEvent)
-async def bot_started(event):
-    print('mettony is gonna fuck your dad') #true
+@client.event
+async def on_ready():
+    await client.change_presence(status=disnake.Status.online, activity=disnake.Activity(type=disnake.ActivityType.playing, name=f"with your dad"))
+    print(f"Logged in as {client.user}!")
 
-@bot.command
-@lightbulb.command('ping', 'Says pong!')
-@lightbulb.implements(lightbulb.SlashCommand)
-async def ping(ctx):
-    await ctx.respond('Pong! ||im gonna fuck you later||') #It was too basic so now mettony is gonna fuck you
+@client.event
+async def on_message_delete(message):
+  if message.author.id == owner:
+    print(f"======================================\nMettony Owner message's are deleted!\nMessage: {message.content}\nChannel: #{message.channel.name}\nTime: {message.created_at}\n======================================")
+  else:
+    print(f"======================================\n{message.author} message's are deleted!\nMessage: {message.content}\nChannel: #{message.channel.name}\nTime: {message.created_at}\n======================================")
+    client.sniped_messages[message.guild.id] = (message.content, message.author, message.channel.name, message.created_at)
 
-@bot.command
-@lightbulb.command('group', 'This is a group')
-@lightbulb.implements(lightbulb.SlashCommandGroup)
-async def my_group(ctx):
-    pass
+@client.command(aliases=['s', 'deletedmessage', 'delm'])
+async def snipe(ctx):
+  contents, author, channel_name, time = client.sniped_messages[ctx.guild.id]
 
-@my_group.child
-@lightbulb.command('subcommand', 'This is a sub command')
-@lightbulb.implements(lightbulb.SlashSubCommand)
-async def subcommand(ctx):
-   await ctx.respond('THIS TUTORIAL IS WORKING') #BUT I GOTTA WAIT A WEEK
+  embed = disnake.Embed(description=contents, color=disnake.Color.blue(), timestamp=time)
+  embed.set_author(name=f"{author.name}#{author.discriminator}", icon_url=author.display_avatar.url)
+  embed.set_footer(text=f"Deleted in: #{channel_name}")
 
-@bot.command
-@lightbulb.option('num2', 'The second number', type=int)
-@lightbulb.option('num1', 'The first number', type=int)
-@lightbulb.command('add', 'Add two numbers together')
-@lightbulb.implements(lightbulb.SlashCommand)
-async def add(ctx):
-    await ctx.respond(ctx.options.num1 + ctx.options.num2) #9 + 10 = 21 STUPID
+  await ctx.channel.send(embed=embed)
 
-bot.run()
+# METERS
+@client.command()
+async def gaymeter(ctx, *, user=None):
+ if user is None:
+  embed = disnake.Embed(title=f"Gay Meter", description=f"You are {random.randrange(100)}% gay.", color=disnake.Colour.blue())
+  await ctx.send(embed=embed)
+ else:
+  embed = disnake.Embed(title=f"Gay Meter", description=f"{user} is {random.randrange(100)}% gay.", color=disnake.Colour.blue())
+  await ctx.send(embed=embed)
+
+@client.command()
+async def coolmeter(ctx, *, user=None):
+ if user is None:
+  embed = disnake.Embed(title=f"Cool Meter", description=f"You are {random.randrange(100)}% cool.", color=disnake.Colour.blue())
+  await ctx.send(embed=embed)
+ else:
+  embed = disnake.Embed(title=f"Cool Meter", description=f"{user} is {random.randrange(100)}% cool.", color=disnake.Colour.blue())
+  await ctx.send(embed=embed)
+
+#WE ARE DOING SOME TROLLING TODAY BOIS
+@client.command()
+async def say(ctx, *, say=None):
+  await ctx.channel.purge(limit=1)
+  await ctx.send(f"{say}")
+
+@client.command()
+async def invite(ctx):
+  await ctx.send('https://discord.com/api/oauth2/authorize?client_id=842098192778264576&permissions=8&scope=bot%20applications.commands')
+
+client.run("YOUR_TOKEN_HERE")
