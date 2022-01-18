@@ -10,13 +10,19 @@ import asyncio
 
 client = commands.Bot(command_prefix="<")
 client.remove_command("help")
+client.sniped_messages = {}
 
-owner = YOUR_ID_HERE
+owner = 731616848860282901
+
+@client.command()
+async def ping(ctx):
+  embed = disnake.Embed(title = 'Pong! 🏓', description = f'Latency: {round(client.latency * 1000)}ms', color = disnake.Colour.blue())
+  await ctx.send(embed=embed)
 
 @client.event
 async def on_ready():
     await client.change_presence(status=disnake.Status.online, activity=disnake.Activity(type=disnake.ActivityType.playing, name=f"with your dad"))
-    print(f"Logged in as {client.user}!")
+    print(f"Logged in as {client.user}!\nyour gay")
 
 @client.event
 async def on_message_delete(message):
@@ -64,5 +70,16 @@ async def say(ctx, *, say=None):
 @client.command()
 async def invite(ctx):
   await ctx.send('https://discord.com/api/oauth2/authorize?client_id=842098192778264576&permissions=8&scope=bot%20applications.commands')
+
+@client.command()
+async def credits(ctx):
+  embed = disnake.Embed(title=f"Credits for Mettony", description=f"Owner: CrusherNotDrip#0001\nHelp with Coding: Hafimie\nCommand Ideas: NeonFurious", color=disnake.Colour.blue())
+  await ctx.send(embed=embed)
+  print(f"used funny credits command")
+
+@client.command()
+async def sauce(ctx):
+  await ctx.send('https://github.com/CrusherMods/Mettony')
+  print(f"User used Github command to eat Spagetti")
 
 client.run("YOUR_TOKEN_HERE")
