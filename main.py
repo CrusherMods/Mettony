@@ -173,7 +173,7 @@ async def help(ctx):
     embed = disnake.Embed(
         title=f"Help Command",
         description=
-        f"**Information:**\n \nm!credits - Shows the Credits of Mettony\n\n**Utilitys:**\n\nm!snipe - Shows the Latest Deleted Message\n\n**Fun:**\n\nm!hack @Username",
+                f"**Information:**\n \nm!credits - Shows the Credits of Mettony\n\n**Utilitys:**\n\nm!snipe - Shows the Latest Deleted Message\n\n**Fun:**\n\nm!hack @Username\n\n**Currency:**\n\nm!beg - You beg for small money\nm!balance - Check your balance here!",
         color=disnake.Colour.blue())
     embed.set_footer(
         text="Prefixes are: m!, mettony & susbot but we use m! for an example")
